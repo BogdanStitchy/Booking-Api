@@ -22,6 +22,7 @@ class BaseDAO:
     @classmethod
     async def get_all(cls, **filer_by):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(**filer_by)
+            query = select(cls.model.__table__).filter_by(**filer_by)
             result = await session.execute(query)
-            return result.mappings().all()
+            result = result.mappings().all()
+            return result
