@@ -11,5 +11,6 @@ NAME_DB = os.environ['NAME_DB']
 HOST = os.environ['HOST']
 PORT = os.environ['PORT']
 HASH_FUNCTION = os.environ['HASH_FUNCTION']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 DATABASE_URL = f"{DIALECT_DB}+{DRIVER_DB}://{LOGIN_DB}:{PASSWORD_DB}@{HOST}:{PORT}/{NAME_DB}"
