@@ -3,7 +3,7 @@ from sqlalchemy import select, and_, or_, func, insert
 
 from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
-from app.db.base_model import async_session_maker, engine
+from app.db.base_model import async_session_maker
 from app.rooms.models import Rooms
 
 
@@ -75,3 +75,16 @@ class BookingDAO(BaseDAO):
                 return new_booking.scalar()
             else:
                 return None
+
+    @classmethod
+    async def get_all(cls, user_id: int):
+        async with async_session_maker() as session:
+            query = select(cls.model.__table__,
+                           Rooms.image_id,
+                           Rooms.name,
+                           Rooms.description,
+                           Rooms.services
+                           ).filter_by(user_id=user_id).join(Rooms)
+            result = await session.execute(query)
+            result = result.mappings().all()
+            return result
