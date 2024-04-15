@@ -45,20 +45,10 @@ def get_hotels(
         }
     ]
     return search_args
-    #     {
-    #     "location": location,
-    #     "date_from": date_from,
-    #     "date_to": date_to,
-    #     "has_spa": has_spa,
-    #     "stars": stars
-    # }
 
+#
+# class SBooking(BaseModel):
+#     room_id: int
+#     date_from: date
+#     date_to: date
 
-class SBooking(BaseModel):
-    room_id: int
-    date_from: date
-    date_to: date
-
-# @app.post("bookings")
-# def add_booking(booking: SBooking):
-#     pass
