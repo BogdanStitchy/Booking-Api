@@ -3,11 +3,11 @@ from datetime import date
 from sqlalchemy import select, and_, or_, func, join
 from sqlalchemy.sql.functions import coalesce
 
-from app.db.base_model import async_session_maker, engine
+from app.db.base_model import async_session_maker
 from app.dao.base import BaseDAO
 from app.hotels.models import Hotels
 from app.bookings.models import Bookings
-from app.rooms.models import Rooms
+from app.hotels.rooms.models import Rooms
 
 
 class HotelsDAO(BaseDAO):
