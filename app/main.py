@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.bookings.router import router as router_bookings
 from app.users.router import router as router_users
@@ -22,44 +22,15 @@ app.include_router(router_rooms)
 app.include_router(router_pages)
 app.include_router(router_images)
 
+origins = [
+    "http://localhost:3000",
+]
 
-class SHotel(BaseModel):
-    address: str
-    name: str
-    stars: int
-
-
-# class SSearchArgs:
-#     def __init__(self,
-#                  location: str,
-#                  date_from: date,
-#                  date_to: date,
-#                  has_spa: Union[bool] = None,
-#                  stars: Union[int] = Query(default=None, ge=1, le=5)
-#                  ):
-#         self.location = location
-#         self.date_from = date_from
-#         self.date_to = date_to
-#         self.has_spa = has_spa
-#         self.stars = stars
-
-
-# @app.get("hotels")
-# def get_hotels(
-#         search_args: SSearchArgs = Depends()
-# ):
-#     hotels = [
-#         {
-#             "address": "ул. Передовая, Москва",
-#             "name": "Main Hotel",
-#             "stars": 5
-#         }
-#     ]
-#     return search_args
-#
-# #
-# # class SBooking(BaseModel):
-# #     room_id: int
-# #     date_from: date
-# #     date_to: date
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,  # отвечает за куки, с каждым запросом посылается кука хранящася
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=["Content_Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
+                   "Authorization"],
+)
