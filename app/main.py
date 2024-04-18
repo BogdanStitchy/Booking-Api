@@ -7,6 +7,8 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from redis import asyncio as aioredis
 
+from config.config import HOST_REDIS
+
 from app.bookings.router import router as router_bookings
 from app.users.router import router as router_users
 from app.hotels.router import router as router_hotels
@@ -43,5 +45,5 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    redis = await aioredis.from_url("redis://localhost", encoding="utf8", decode_responses=True)
+    redis = await aioredis.from_url(f"redis://{HOST_REDIS}", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")

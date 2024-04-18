@@ -1,7 +1,8 @@
 from celery import Celery
+from config.config import HOST_REDIS
 
 celery = Celery(
     "tasks",
-    broker="redis://localhost:6379",
+    broker=f"redis://{HOST_REDIS}",
     include="app.tasks.tasks"
 )
