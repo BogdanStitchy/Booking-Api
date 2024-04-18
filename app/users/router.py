@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response, Depends
+from fastapi_cache.decorator import cache
 
 from app.exceptions import UserAlreadyExistsException, IncorrectEmailOrPasswordException
 from app.users.dao import UsersDAO
@@ -37,6 +38,7 @@ async def logout_user(response: Response):
     response.delete_cookie("booking_access_token")
 
 
-@router.post("/me")
-async def read_users_me(response: Response, current_user: Users = Depends(get_current_user)):
+@router.get("/me")
+@cache(expire=60)
+async def read_users_me(current_user: Users = Depends(get_current_user)):
     return current_user

@@ -1,6 +1,6 @@
 from datetime import date
-
 from fastapi import APIRouter, Depends, status, Response
+from fastapi_cache.decorator import cache
 
 from app.bookings.dao import BookingDAO
 from app.bookings.schemas import SBooking
@@ -15,6 +15,7 @@ router = APIRouter(
 
 
 @router.get("")
+@cache(expire=60)
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking]:
     returning_value = await BookingDAO.get_all(user_id=user.id)
     return returning_value
