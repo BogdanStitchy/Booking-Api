@@ -53,10 +53,8 @@ class BookingDAO(BaseDAO):
                 Rooms.quantity, booked_rooms.c.room_id
             )
 
-            # print(get_rooms_left.compile(engine, compile_kwargs={"literal_binds": True}))
             rooms_left = await session.execute(get_rooms_left)
             rooms_left: int = rooms_left.scalar()
-            print(f"{rooms_left=}")
 
             if rooms_left > 0:
                 get_price = select(Rooms.price).filter_by(id=room_id)
@@ -68,11 +66,12 @@ class BookingDAO(BaseDAO):
                     date_from=date_from,
                     date_to=date_to,
                     price=price,
-                ).returning(Bookings)
+                ).returning(Bookings.__table__)
 
                 new_booking = await session.execute(add_booking)
                 await session.commit()
-                return new_booking.scalar()
+                new_booking = new_booking.mappings().fetchone()
+                return new_booking
             else:
                 return None
 
