@@ -5,6 +5,7 @@ from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
 from app.db.base_model import async_session_maker
 from app.hotels.rooms.models import Rooms
+from app.hotels.models import Hotels
 
 
 class BookingDAO(BaseDAO):
@@ -66,11 +67,11 @@ class BookingDAO(BaseDAO):
                     date_from=date_from,
                     date_to=date_to,
                     price=price,
-                ).returning(Bookings.__table__)
+                ).returning(Bookings.id)
 
                 new_booking = await session.execute(add_booking)
                 await session.commit()
-                new_booking = new_booking.mappings().fetchone()
+                new_booking = new_booking.scalar()
                 return new_booking
             else:
                 return None
@@ -86,4 +87,18 @@ class BookingDAO(BaseDAO):
                            ).filter_by(user_id=user_id).join(Rooms)
             result = await session.execute(query)
             result = result.mappings().all()
+            return result
+
+    @classmethod
+    async def get_bookings_data_for_email(cls, booking_id: int):
+        async with async_session_maker() as session:
+            query = select(cls.model.__table__,
+                           Rooms.name.label("room_name"),
+                           Hotels.name.label("hotel_name"),
+                           Hotels.location,
+                           ).where(Bookings.id == booking_id
+                                   ).join(Rooms, Rooms.id == Bookings.room_id
+                                          ).join(Hotels, Hotels.id == Rooms.hotel_id)
+            result = await session.execute(query)
+            result = result.mappings().fetchone()
             return result

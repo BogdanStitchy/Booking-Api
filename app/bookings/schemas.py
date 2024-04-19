@@ -13,6 +13,12 @@ class SBooking(BaseModel):
     total_days: int
 
 
+class SBookingAdvancedData(SBooking):
+    room_name: str
+    hotel_name: str
+    location: str
+
+
 class SBookingWithRoomData(SBooking):
     image_id: int
     name: str

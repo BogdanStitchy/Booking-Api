@@ -4,7 +4,7 @@ from fastapi_cache.decorator import cache
 from pydantic import parse_obj_as
 
 from app.bookings.dao import BookingDAO
-from app.bookings.schemas import SBookingWithRoomData, SBooking
+from app.bookings.schemas import SBookingWithRoomData, SBookingAdvancedData
 from app.exceptions import RoomCannotBeBooked
 from app.users.models import Users
 from app.users.dependencies import get_current_user
@@ -27,13 +27,15 @@ async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking
 @router.post("/add_booking")
 async def add_bookings(room_id: int, date_from: date, date_to: date,
                        user: Users = Depends(get_current_user)):
-    booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
-    if not booking:
+    booking_id = await BookingDAO.add(user.id, room_id, date_from, date_to)
+    if not booking_id:
         raise RoomCannotBeBooked
 
-    booking_dict = parse_obj_as(SBooking, booking).dict()
-    send_booking_confirmation_email.delay(booking_dict, user.email)
-    return booking_dict
+    advanced_booking_data = await BookingDAO.get_bookings_data_for_email(booking_id)
+    advanced_booking_data = parse_obj_as(SBookingAdvancedData, advanced_booking_data).dict()
+    send_booking_confirmation_email.delay(advanced_booking_data, user.email)
+
+    return advanced_booking_data
 
 
 @router.delete("/{booking_id}")
