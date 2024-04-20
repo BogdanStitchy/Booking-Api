@@ -6,7 +6,10 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
 from redis import asyncio as aioredis
+from sqladmin import Admin
 
+from app.admin_panel.views import UsersAdmin, BookingsAdmin, HotelsAdmin, RoomsAdmin
+from app.db.base_model import engine
 from config.config import HOST_REDIS
 
 from app.bookings.router import router as router_bookings
@@ -47,3 +50,11 @@ app.add_middleware(
 async def startup():
     redis = await aioredis.from_url(f"redis://{HOST_REDIS}", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")
+
+
+admin = Admin(app, engine)
+
+admin.add_view(UsersAdmin)
+admin.add_view(BookingsAdmin)
+admin.add_view(HotelsAdmin)
+admin.add_view(RoomsAdmin)
