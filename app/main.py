@@ -9,6 +9,7 @@ from redis import asyncio as aioredis
 from sqladmin import Admin
 
 from app.admin_panel.views import UsersAdmin, BookingsAdmin, HotelsAdmin, RoomsAdmin
+from app.admin_panel.auth import authentication_backend
 from app.db.base_model import engine
 from config.config import HOST_REDIS
 
@@ -52,7 +53,7 @@ async def startup():
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
 
-admin = Admin(app, engine)
+admin = Admin(app, engine, authentication_backend=authentication_backend)
 
 admin.add_view(UsersAdmin)
 admin.add_view(BookingsAdmin)
