@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 
 load_dotenv("config/.env")
 
+MODE = os.environ['MODE']
+
 DRIVER_DB = "asyncpg"
 DIALECT_DB = "postgresql"
 
@@ -14,6 +16,12 @@ PORT = os.environ['PORT']
 HASH_FUNCTION = os.environ['HASH_FUNCTION']
 SECRET_KEY = os.environ['SECRET_KEY']
 
+TEST_LOGIN_DB = os.environ['TEST_LOGIN_DB']
+TEST_PASSWORD_DB = os.environ['TEST_PASSWORD_DB']
+TEST_NAME_DB = os.environ['TEST_NAME_DB']
+TEST_HOST = os.environ['TEST_HOST']
+TEST_PORT = os.environ['TEST_PORT']
+
 SMTP_HOST = os.environ['SMTP_HOST']
 SMTP_PORT = os.environ['SMTP_PORT']
 SMTP_USER = os.environ['SMTP_USER']
@@ -22,5 +30,6 @@ SMTP_PASS = os.environ['SMTP_PASS']
 HOST_REDIS = os.environ['HOST_REDIS']
 
 DATABASE_URL = f"{DIALECT_DB}+{DRIVER_DB}://{LOGIN_DB}:{PASSWORD_DB}@{HOST}:{PORT}/{NAME_DB}"
+TEST_DATABASE_URL = f"{DIALECT_DB}+{DRIVER_DB}://{TEST_LOGIN_DB}:{TEST_PASSWORD_DB}@{TEST_HOST}:{TEST_PORT}/{TEST_NAME_DB}"
 
 
