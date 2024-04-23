@@ -5,8 +5,13 @@ from datetime import datetime
 import pytest
 from sqlalchemy import insert
 
+from fastapi.testclient import TestClient
+from httpx import AsyncClient
+
 from app.db.base_model import Base, async_session_maker, engine
 from config import config
+
+from app.main import app as fastapi_app
 
 from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
@@ -58,3 +63,8 @@ def event_loop(request):
     yield loop
     loop.close()
 
+
+@pytest.fixture(scope="function")
+async def async_client():
+    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+        yield ac
