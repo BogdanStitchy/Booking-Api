@@ -51,7 +51,8 @@ class HotelsDAO(BaseDAO):
                 Hotels.image_id,
                 (Hotels.rooms_quantity - coalesce(booked_rooms_in_hotel.c.count_booked_rooms, 0)).label("rooms_left")
             ).where(
-                query_find
+                Hotels.location.ilike(f"%{location}%"),
+                # query_find
             ).join(
                 booked_rooms_in_hotel,
                 booked_rooms_in_hotel.c.id == Hotels.id,
@@ -66,7 +67,7 @@ class HotelsDAO(BaseDAO):
                 Hotels.id
             )
 
-            booked_rooms_in_hotel = await session.execute(get_hotels_left)
-            booked_rooms_in_hotel = booked_rooms_in_hotel.mappings().all()
+            left_hotels = await session.execute(get_hotels_left)
+            left_hotels = left_hotels.mappings().all()
 
-            return booked_rooms_in_hotel
+            return left_hotels
