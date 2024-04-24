@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 
 import pytest
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from sqlalchemy import insert
 
 from fastapi.testclient import TestClient
@@ -55,16 +57,32 @@ async def prepare_database():
 
         await session.commit()
 
-
-# из документации к pytest-asyncio
-@pytest.fixture(scope="session")
-def event_loop(request):
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+#
+# # из документации к pytest-asyncio
+# @pytest.fixture(scope="session")
+# def event_loop(request):
+#     loop = asyncio.get_event_loop_policy().new_event_loop()
+#     yield loop
+#     loop.close()
 
 
 @pytest.fixture(scope="function")
 async def async_client():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture(scope="session")
+async def async_client_authenticated():
+    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+        await ac.post("auth/login", json={
+            "email": "test@test.com",
+            "password": "pass"
+        })
+        assert ac.cookies["booking_access_token"]
+        yield ac
+
+
+@pytest.fixture(scope="module")
+async def start_redis_for_method_with_cache():
+    FastAPICache.init(RedisBackend("redis://localhost"), prefix="fastapi-cache")
