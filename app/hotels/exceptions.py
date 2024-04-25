@@ -17,3 +17,8 @@ class IncorrectTimePeriodException(HotelsException):
 class IncorrectDurationTimeException(HotelsException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "Срок бронирования не больше 100 дней"
+
+
+class IncorrectHotelIdException(HotelsException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Данные по запрашиваемому отелю не найдены"

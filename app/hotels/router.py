@@ -3,7 +3,8 @@ from fastapi import APIRouter
 from fastapi_cache.decorator import cache
 
 from app.hotels.schemas import SHotelsWithRoomsLeft, SHotels
-from app.hotels.exceptions import IncorrectTimePeriodException, IncorrectDurationTimeException
+from app.hotels.exceptions import IncorrectTimePeriodException, IncorrectDurationTimeException, \
+    IncorrectHotelIdException
 from app.hotels.dao import HotelsDAO
 
 router = APIRouter(
@@ -26,5 +27,6 @@ async def get_hotels(location: str, date_from: date, date_to: date) -> list[SHot
 @router.get("/{hotel_id}/1")
 async def get_one_hotel(hotel_id: int) -> SHotels:
     result = await HotelsDAO.find_by_id(hotel_id)
-    print(f"{result=}")
+    if result is None:
+        raise IncorrectHotelIdException
     return result
