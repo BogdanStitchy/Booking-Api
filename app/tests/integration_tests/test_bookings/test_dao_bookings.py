@@ -32,6 +32,12 @@ async def test_add_and_get_booking(expected_id):
 ])
 async def test_get_bookings(id_booking, expected_data_booking):
     booking = await BookingDAO.get_bookings_data_for_email(id_booking)
-    print(f"{booking=}")
-    print(f"{type(booking)=}")
     assert booking == expected_data_booking
+
+
+@pytest.mark.parametrize("id_booking", [1, 2, 3])
+async def test_delete_booking(id_booking):
+    await BookingDAO.delete(id=id_booking)
+    booking = await BookingDAO.get_bookings_data_for_email(id_booking)
+    assert booking is None
+
