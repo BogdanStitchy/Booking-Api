@@ -44,16 +44,18 @@ class RoomsDAO(BaseDAO):
 
             get_rooms_left = select(
                 Rooms.__table__,
-                (func.sum(Bookings.total_cost)).label("total_cost"),
+                (func.coalesce(func.sum(Bookings.total_cost), 0)).label("total_cost"),
                 (Rooms.quantity - coalesce(booked_rooms.c.count_booked_rooms, 0)).label("rooms_left")
             ).where(
-                query_find
+                Rooms.hotel_id == hotel_id
             ).join(
                 booked_rooms,
-                booked_rooms.c.id == Rooms.id
+                booked_rooms.c.id == Rooms.id,
+                isouter=True
             ).join(
                 Bookings,
-                Bookings.room_id == Rooms.id
+                Bookings.room_id == Rooms.id,
+                isouter=True
             ).group_by(
                 Rooms.id,
                 Rooms.quantity,
@@ -62,7 +64,6 @@ class RoomsDAO(BaseDAO):
                 Rooms.id
             )
 
-            query = select(booked_rooms)
             booked_rooms = await session.execute(get_rooms_left)
             booked_rooms = booked_rooms.mappings().all()
 
