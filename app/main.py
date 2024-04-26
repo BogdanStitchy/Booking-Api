@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi_versioning import VersionedFastAPI
 from redis import asyncio as aioredis
 from sqladmin import Admin
 import sentry_sdk
@@ -27,7 +28,6 @@ sentry_sdk.init(
     traces_sample_rate=1.0,
     profiles_sample_rate=1.0,
 )
-app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 app.include_router(router_users)
 app.include_router(router_bookings)
@@ -57,6 +57,16 @@ async def startup():
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
 
+app = VersionedFastAPI(app,
+                       version_format='{major}',
+                       prefix_format='/v{major}',
+                       description='Добро пожаловать на страницу документации проекта.'
+                                   '<br>На текущий момент доступна одна версия проекта.'
+                       # middleware=[
+                       #     Middleware(SessionMiddleware, secret_key='')
+                       # ]
+                       )
+
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 
 admin.add_view(UsersAdmin)
@@ -75,3 +85,5 @@ async def add_process_time_header(request: Request, call_next):
         "process_time": round(process_time, 4)
     })
     return response
+
+app.mount("/static", StaticFiles(directory="app/static"), "static")

@@ -10,6 +10,7 @@ from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 from fastapi import APIRouter, Depends, Response, status
+from fastapi_versioning import version
 
 router = APIRouter(
     prefix="/bookings",
@@ -18,6 +19,7 @@ router = APIRouter(
 
 
 @router.get("")
+@version(1)
 @cache(expire=60)
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBookingWithRoomData]:
     returning_value = await BookingDAO.get_all(user_id=user.id)
@@ -32,6 +34,7 @@ async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking
 
 
 @router.post("/add_booking")
+@version(1)
 async def add_bookings(room_id: int, date_from: date, date_to: date,
                        user: Users = Depends(get_current_user)):
     booking_id = await BookingDAO.add(user.id, room_id, date_from, date_to)
@@ -50,6 +53,7 @@ async def add_bookings(room_id: int, date_from: date, date_to: date,
 
 
 @router.delete("/{booking_id}")
+@version(1)
 async def delete_booking(booking_id: int):
     await BookingDAO.delete(id=booking_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
