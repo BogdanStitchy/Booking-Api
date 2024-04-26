@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import and_, or_, func, join, select
+from sqlalchemy import and_, func, join, or_, select
 from sqlalchemy.sql.functions import coalesce
 
 from app.bookings.models import Bookings

@@ -5,20 +5,17 @@ from datetime import datetime
 import pytest
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from httpx import AsyncClient
 from sqlalchemy import insert
 
-from fastapi.testclient import TestClient
-from httpx import AsyncClient
-
+from app.bookings.models import Bookings
 from app.db.base_model import Base, async_session_maker, engine
-from config import config
-
-from app.main import app as fastapi_app
-
 from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
+from app.main import app as fastapi_app
 from app.users.models import Users
-from app.bookings.models import Bookings
+from config import config
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(scope="session", autouse=True)

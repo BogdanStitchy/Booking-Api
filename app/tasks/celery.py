@@ -1,4 +1,5 @@
 from celery import Celery
+
 from config.config import HOST_REDIS
 
 celery = Celery(

@@ -1,6 +1,8 @@
 from email.message import EmailMessage
-from config import config
+
 from pydantic import EmailStr
+
+from config import config
 
 
 def create_booking_confirmation_template(booking: dict, email_to: EmailStr):

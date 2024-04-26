@@ -2,11 +2,10 @@ from datetime import date
 
 from fastapi_cache.decorator import cache
 
-from app.hotels.router import router
+from app.hotels.exceptions import IncorrectHotelIdException, IncorrectTimePeriodException
 from app.hotels.rooms.dao import RoomsDAO
 from app.hotels.rooms.schemas import SRooms
-
-from app.hotels.exceptions import IncorrectTimePeriodException, IncorrectHotelIdException
+from app.hotels.router import router
 
 
 @router.get("/{hotel_id}/rooms")

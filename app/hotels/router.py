@@ -1,11 +1,15 @@
 from datetime import date
-from fastapi import APIRouter
+
 from fastapi_cache.decorator import cache
 
-from app.hotels.schemas import SHotelsWithRoomsLeft, SHotels
-from app.hotels.exceptions import IncorrectTimePeriodException, IncorrectDurationTimeException, \
-    IncorrectHotelIdException
 from app.hotels.dao import HotelsDAO
+from app.hotels.exceptions import (
+    IncorrectDurationTimeException,
+    IncorrectHotelIdException,
+    IncorrectTimePeriodException,
+)
+from app.hotels.schemas import SHotels, SHotelsWithRoomsLeft
+from fastapi import APIRouter
 
 router = APIRouter(
     prefix="/hotels",
