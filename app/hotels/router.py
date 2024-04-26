@@ -1,5 +1,6 @@
 from datetime import date
 
+from fastapi import Response, status
 from fastapi_cache.decorator import cache
 
 from app.hotels.dao import HotelsDAO
@@ -24,7 +25,12 @@ async def get_hotels(location: str, date_from: date, date_to: date) -> list[SHot
         raise IncorrectTimePeriodException
     if (date_to - date_from).days > 100:
         raise IncorrectDurationTimeException
+
     result = await HotelsDAO.get_all(location, date_from, date_to)
+
+    if "error" in result:
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     return result
 
 
@@ -33,4 +39,8 @@ async def get_one_hotel(hotel_id: int) -> SHotels:
     result = await HotelsDAO.find_by_id(hotel_id)
     if result is None:
         raise IncorrectHotelIdException
+
+    if isinstance(result, dict):
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     return result
