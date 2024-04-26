@@ -5,7 +5,7 @@ from pydantic import parse_obj_as
 
 from app.bookings.dao import BookingDAO
 from app.bookings.schemas import SBookingAdvancedData, SBookingWithRoomData
-from app.exceptions import RoomCannotBeBooked
+from app.exceptions import RoomCannotBeBooked, BookingsNotFoundException
 from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
@@ -21,6 +21,13 @@ router = APIRouter(
 @cache(expire=60)
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBookingWithRoomData]:
     returning_value = await BookingDAO.get_all(user_id=user.id)
+
+    if not returning_value:
+        raise BookingsNotFoundException
+
+    if "error" in returning_value:
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     return returning_value
 
 
@@ -28,8 +35,12 @@ async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking
 async def add_bookings(room_id: int, date_from: date, date_to: date,
                        user: Users = Depends(get_current_user)):
     booking_id = await BookingDAO.add(user.id, room_id, date_from, date_to)
+
     if not booking_id:
         raise RoomCannotBeBooked
+
+    if isinstance(booking_id, dict):
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     advanced_booking_data = await BookingDAO.get_bookings_data_for_email(booking_id)
     advanced_booking_data = parse_obj_as(SBookingAdvancedData, advanced_booking_data).dict()

@@ -31,7 +31,7 @@ class TokenAbsentException(BookingException):
 
 class IncorrectTokenFormatException(BookingException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    detail = "неверный формат токена"
+    detail = "Неверный формат токена"
 
 
 class UserIsNotPresentException(BookingException):
@@ -41,3 +41,8 @@ class UserIsNotPresentException(BookingException):
 class RoomCannotBeBooked(BookingException):
     status_code = status.HTTP_409_CONFLICT
     detail = "Не осталось свободных мест"
+
+
+class BookingsNotFoundException(BookingException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Бронирования отсутствуют"
