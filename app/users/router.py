@@ -6,7 +6,7 @@ from app.users.dao import UsersDAO
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.users.shemas import SUserAuth
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, status
 
 router = APIRouter(
     prefix="/auth",
@@ -17,8 +17,14 @@ router = APIRouter(
 @router.post("/register")
 async def register_user(user_data: SUserAuth):
     existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
+
     if existing_user:
         raise UserAlreadyExistsException
+
+    if isinstance(existing_user, dict):
+        if "error" in existing_user:
+            return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
 
