@@ -1,9 +1,12 @@
 import os
+from typing import Literal
+
 from dotenv import load_dotenv
 
 load_dotenv("config/.env")
 
-MODE = os.environ['MODE']
+MODE: Literal["DEV", "TEST", "PROD"] = os.environ['MODE']
+LOG_LEVEL = os.environ['LOG_LEVEL']
 
 DRIVER_DB = "asyncpg"
 DIALECT_DB = "postgresql"
