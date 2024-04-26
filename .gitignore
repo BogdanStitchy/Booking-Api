@@ -4,3 +4,4 @@ config/.env
 app/static/images/*
 run_tests.*
 redis-server.*
+*.rdb
