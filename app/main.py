@@ -6,6 +6,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from sqladmin import Admin
+import sentry_sdk
 
 from app.admin_panel.auth import authentication_backend
 from app.admin_panel.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
@@ -17,10 +18,15 @@ from app.images.router import router as router_images
 from app.logger import logger
 from app.pages.router import router as router_pages
 from app.users.router import router as router_users
-from config.config import HOST_REDIS
+from config.config import HOST_REDIS, SENTRY_DNS
 
 app = FastAPI()
 
+sentry_sdk.init(
+    dsn=SENTRY_DNS,
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 app.include_router(router_users)
