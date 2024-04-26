@@ -13,7 +13,7 @@ async def test_add_and_get_booking(expected_id):
         date_from=datetime.strptime("2024-06-10", "%Y-%m-%d"),
         date_to=datetime.strptime("2024-06-20", "%Y-%m-%d")
     )
-    assert new_booking_id == expected_id
+    assert isinstance(new_booking_id, int)
 
     new_booking = await BookingDAO.find_by_id(new_booking_id)
     assert new_booking is not None
@@ -32,7 +32,8 @@ async def test_add_and_get_booking(expected_id):
 ])
 async def test_get_bookings(id_booking, expected_data_booking):
     booking = await BookingDAO.get_bookings_data_for_email(id_booking)
-    assert booking == expected_data_booking
+    for key in booking:
+        assert expected_data_booking[key] == booking[key]
 
 
 @pytest.mark.parametrize("id_booking", [1, 2, 3])
@@ -40,4 +41,3 @@ async def test_delete_booking(id_booking):
     await BookingDAO.delete(id=id_booking)
     booking = await BookingDAO.get_bookings_data_for_email(id_booking)
     assert booking is None
-

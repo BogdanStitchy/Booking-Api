@@ -31,7 +31,7 @@ async def test_api_add_and_get_booking(async_client_authenticated: AsyncClient, 
 async def test_delete_and_get_booking(async_client_authenticated: AsyncClient, start_redis_for_method_with_cache):
     response_bookings = await async_client_authenticated.get("/bookings")
     count_bookings = len(response_bookings.json())
-    for i in range(1, count_bookings + 1):
+    for i in range(1, count_bookings + 2):
         response_delete = await async_client_authenticated.delete(f"/bookings/{i}")
         assert response_delete.status_code == 204
     response_bookings = await async_client_authenticated.get("/bookings")
