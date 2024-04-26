@@ -1,5 +1,6 @@
 from datetime import date
 
+from fastapi import Response, status
 from fastapi_cache.decorator import cache
 
 from app.hotels.exceptions import IncorrectHotelIdException, IncorrectTimePeriodException
@@ -17,5 +18,8 @@ async def get_rooms(hotel_id: int, date_from: date, date_to: date) -> list[SRoom
     result = await RoomsDAO.get_all(hotel_id, date_from, date_to)
     if result in ([], None):
         raise IncorrectHotelIdException
+
+    if "error" in result:
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return result
