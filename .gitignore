@@ -5,3 +5,4 @@ app/static/images/*
 run_tests.*
 redis-server.*
 *.rdb
+.env-non-dev
