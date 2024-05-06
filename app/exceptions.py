@@ -46,3 +46,13 @@ class RoomCannotBeBooked(BookingException):
 class BookingsNotFoundException(BookingException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = "Бронирования отсутствуют"
+
+
+class CannotAddDataToDatabase(BookingException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    detail = "Не удалось добавить запись"
+
+
+class CannotProcessCSV(BookingException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    detail = "Не удалось обработать CSV файл"

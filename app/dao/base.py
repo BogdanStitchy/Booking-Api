@@ -109,3 +109,22 @@ class BaseDAO:
             }
             logger.error(msg, extra=extra, exc_info=True)
             return {"error": error.__str__()}
+
+    @classmethod
+    async def add_bulk(cls, *data):
+        # Для загрузки массива данных [{"id": 1}, {"id": 2}]
+        try:
+            query = insert(cls.model).values(*data).returning(cls.model.id)
+            async with async_session_maker() as session:
+                result = await session.execute(query)
+                await session.commit()
+                return result.mappings().first()
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc"
+            msg += ": Cannot bulk insert data into table"
+
+            logger.error(msg, extra={"table": cls.model.__tablename__}, exc_info=True)
+            return None

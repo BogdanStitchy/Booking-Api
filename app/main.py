@@ -16,6 +16,7 @@ from app.db.base_model import engine
 from app.hotels.rooms.router import router as router_rooms
 from app.hotels.router import router as router_hotels
 from app.images.router import router as router_images
+from app.importer.router import router as router_import
 from app.logger import logger
 from app.pages.router import router as router_pages
 from app.users.router import router as router_users
@@ -36,6 +37,7 @@ app.include_router(router_rooms)
 
 app.include_router(router_pages)
 app.include_router(router_images)
+app.include_router(router_import)
 
 origins = [
     "http://localhost:3000",
@@ -57,15 +59,15 @@ async def startup():
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
 
-app = VersionedFastAPI(app,
-                       version_format='{major}',
-                       prefix_format='/v{major}',
-                       description='Добро пожаловать на страницу документации проекта.'
-                                   '<br>На текущий момент доступна одна версия проекта.'
-                       # middleware=[
-                       #     Middleware(SessionMiddleware, secret_key='')
-                       # ]
-                       )
+# app = VersionedFastAPI(app,
+#                        version_format='{major}',
+#                        prefix_format='/v{major}',
+#                        description='Добро пожаловать на страницу документации проекта.'
+#                                    '<br>На текущий момент доступна одна версия проекта.'
+#                        # middleware=[
+#                        #     Middleware(SessionMiddleware, secret_key='')
+#                        # ]
+#                        )
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 
@@ -85,5 +87,6 @@ async def add_process_time_header(request: Request, call_next):
         "process_time": round(process_time, 4)
     })
     return response
+
 
 app.mount("/static", StaticFiles(directory="app/static"), "static")
