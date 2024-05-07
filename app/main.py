@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_versioning import VersionedFastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from sqladmin import Admin
 import sentry_sdk
@@ -68,6 +69,12 @@ async def startup():
 #                        #     Middleware(SessionMiddleware, secret_key='')
 #                        # ]
 #                        )
+
+instrumentator = Instrumentator(
+    should_group_status_codes=False,  # не группировать статусы ответа
+    excluded_handlers=[".*admin.*", "/metrics"],  # игнорируемые эндпоинты
+)
+instrumentator.instrument(app).expose(app)  # Prometheus
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 
