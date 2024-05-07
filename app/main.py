@@ -20,6 +20,7 @@ from app.images.router import router as router_images
 from app.importer.router import router as router_import
 from app.logger import logger
 from app.pages.router import router as router_pages
+from app.prometheus.router import router as router_prometheus
 from app.users.router import router as router_users
 from config.config import HOST_REDIS, SENTRY_DNS
 
@@ -39,6 +40,7 @@ app.include_router(router_rooms)
 app.include_router(router_pages)
 app.include_router(router_images)
 app.include_router(router_import)
+app.include_router(router_prometheus)
 
 origins = [
     "http://localhost:3000",
