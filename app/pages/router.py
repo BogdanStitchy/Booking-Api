@@ -35,3 +35,27 @@ async def get_login_page(request: Request):
 async def get_register_page(request: Request):
     return templates.TemplateResponse("auth/register.html", {"request": request})
 
+
+@router.post("/successful_booking", response_class=HTMLResponse)
+async def get_successful_booking_page(
+        request: Request,
+        _=Depends(add_bookings),
+):
+    return templates.TemplateResponse(
+        "bookings/booking_successful.html", {"request": request}
+    )
+
+
+@router.get("/bookings", response_class=HTMLResponse)
+async def get_bookings_page(
+        request: Request,
+        bookings=Depends(get_bookings),
+):
+    return templates.TemplateResponse(
+        "bookings/bookings.html",
+        {
+            "request": request,
+            "bookings": bookings,
+            "format_number_thousand_separator": format_number_thousand_separator,
+        },
+    )
