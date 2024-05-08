@@ -59,6 +59,8 @@ async def get_hotels_page(
             "date_to": date_to.strftime("%Y-%m-%d"),
             "date_from": date_from.strftime("%Y-%m-%d"),
             "dates": dates,
+            "now": datetime.now,
+            "timedelta": timedelta
         },
     )
 

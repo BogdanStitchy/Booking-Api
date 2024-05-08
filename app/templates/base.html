@@ -28,8 +28,9 @@
 <nav class="mb-10">
     <div class="flex justify-between px-8 py-3 text-2xl">
         <ul>
-            <!-- тут захардкожены значения -->
-            <li><a href="/pages/hotels/Алтай?date_to=2024-05-01&date_from=2024-04-17">🌍 МирПутешествий</a></li>
+            <li>
+                <a href="/pages/hotels/Алтай?date_to={{ ( now() + timedelta(days=7)).strftime('%Y-%m-%d') }}&date_from={{ now().strftime('%Y-%m-%d') }}">🌍
+                    МирПутешествий</a></li>
         </ul>
         <ul class="flex gap-x-5">
             <li><a href="/pages/bookings">Мои брони</a></li>
