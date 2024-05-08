@@ -3,7 +3,7 @@
 {% block head %}
 <script>
     async function addBooking(room_id, date_from, date_to) {
-        const url = `http://127.0.0.1:8000/pages/successful_booking?room_id=${encodeURIComponent(room_id)}&date_from=${encodeURIComponent(date_from)}&date_to=${encodeURIComponent(date_to)}`;
+        const url = `http://127.0.0.1:8000/bookings/add_booking?room_id=${encodeURIComponent(room_id)}&date_from=${encodeURIComponent(date_from)}&date_to=${encodeURIComponent(date_to)}`;
         console.log(room_id, date_from, date_to)
         await fetch(url, {
             method: 'POST',
