@@ -24,8 +24,8 @@ router = APIRouter(
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBookingWithRoomData]:
     returning_value = await BookingDAO.get_all(user_id=user.id)
 
-    if not returning_value:
-        raise BookingsNotFoundException
+    # if not returning_value:
+    #     raise BookingsNotFoundException
 
     if "error" in returning_value:
         return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
