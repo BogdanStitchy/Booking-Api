@@ -35,4 +35,4 @@ async def test_delete_and_get_booking(async_client_authenticated: AsyncClient, s
         response_delete = await async_client_authenticated.delete(f"/bookings/{i}")
         assert response_delete.status_code == 204
     response_bookings = await async_client_authenticated.get("/bookings")
-    assert response_bookings.json() == {'detail': 'Бронирования отсутствуют'}
+    assert response_bookings.json() == []
