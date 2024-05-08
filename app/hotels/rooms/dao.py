@@ -45,9 +45,11 @@ class RoomsDAO(BaseDAO):
                         .join(Bookings, Bookings.room_id == Rooms.id)
                 ).cte("booked_rooms")
 
+                days_difference = (date_to - date_from).days
+
                 get_rooms_left = select(
                     Rooms.__table__,
-                    (func.coalesce(func.sum(Bookings.total_cost), 0)).label("total_cost"),
+                    (days_difference * Rooms.price).label("total_cost"),
                     (Rooms.quantity - coalesce(booked_rooms.c.count_booked_rooms, 0)).label("rooms_left")
                 ).where(
                     Rooms.hotel_id == hotel_id
