@@ -36,6 +36,33 @@ async def get_register_page(request: Request):
     return templates.TemplateResponse("auth/register.html", {"request": request})
 
 
+@router.get("/hotels/{location}", response_class=HTMLResponse)
+async def get_hotels_page(
+        request: Request,
+        location: str,
+        date_to: date,
+        date_from: date,
+        hotels=Depends(get_hotels),
+):
+    dates = get_month_days()
+    if date_from > date_to:
+        date_to, date_from = date_from, date_to
+    date_from = max(datetime.today().date(), date_from)  # ставим дату заезда позже текущей даты
+    date_to = min((datetime.today() + timedelta(days=99)).date(),
+                  date_to)  # ставим дату выезда не позже, чем через 99 дней
+    return templates.TemplateResponse(
+        "hotels_and_rooms/hotels.html",
+        {
+            "request": request,
+            "hotels": hotels,
+            "location": location,
+            "date_to": date_to.strftime("%Y-%m-%d"),
+            "date_from": date_from.strftime("%Y-%m-%d"),
+            "dates": dates,
+        },
+    )
+
+
 @router.post("/successful_booking", response_class=HTMLResponse)
 async def get_successful_booking_page(
         request: Request,

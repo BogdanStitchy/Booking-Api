@@ -1,0 +1,20 @@
+input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 2px solid #facc15;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/*!* Стили для иконки календаря *!*/
+/*input[type="date"]::-webkit-calendar-picker-indicator {*/
+/*    display: none; !* Скрыть иконку календаря *!*/
+/*}*/
+
+/*!* Стили для области, где отображается дата *!*/
+/*input[type="date"]::-webkit-datetime-edit {*/
+/*    flex: 1; !* Растянуть на всю ширину *!*/
+/*}*/
