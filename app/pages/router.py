@@ -28,12 +28,20 @@ async def get_hotels_page(
 
 @router.get("/login", response_class=HTMLResponse)
 async def get_login_page(request: Request):
-    return templates.TemplateResponse("auth/login.html", {"request": request})
+    return templates.TemplateResponse("auth/login.html", {
+        "request": request,
+        "now": datetime.now,
+        "timedelta": timedelta
+    })
 
 
 @router.get("/register", response_class=HTMLResponse)
 async def get_register_page(request: Request):
-    return templates.TemplateResponse("auth/register.html", {"request": request})
+    return templates.TemplateResponse("auth/register.html", {
+        "request": request,
+        "now": datetime.now,
+        "timedelta": timedelta
+    })
 
 
 @router.get("/hotels/{location}", response_class=HTMLResponse)
@@ -65,13 +73,32 @@ async def get_hotels_page(
     )
 
 
-@router.post("/successful_booking", response_class=HTMLResponse)
-async def get_successful_booking_page(
+@router.get("/hotels/{hotel_id}/rooms", response_class=HTMLResponse)
+async def get_rooms_page(
         request: Request,
-        _=Depends(add_bookings),
+        date_from: date,
+        date_to: date,
+        rooms=Depends(get_rooms),
+        hotel=Depends(get_one_hotel),
 ):
+    date_from_formatted = date_from.strftime("%d.%m.%Y")
+    date_to_formatted = date_to.strftime("%d.%m.%Y")
+    booking_length = (date_to - date_from).days
     return templates.TemplateResponse(
-        "bookings/booking_successful.html", {"request": request}
+        "hotels_and_rooms/rooms.html",
+        {
+            "request": request,
+            "hotel": hotel,
+            "rooms": rooms,
+            "date_from": date_from,
+            "date_to": date_to,
+            "booking_length": booking_length,
+            "date_from_formatted": date_from_formatted,
+            "date_to_formatted": date_to_formatted,
+            "format_number_thousand_separator": format_number_thousand_separator,
+            "now": datetime.now,
+            "timedelta": timedelta
+        },
     )
 
 
@@ -86,5 +113,7 @@ async def get_bookings_page(
             "request": request,
             "bookings": bookings,
             "format_number_thousand_separator": format_number_thousand_separator,
+            "now": datetime.now,
+            "timedelta": timedelta
         },
     )
