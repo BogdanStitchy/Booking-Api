@@ -1,0 +1,80 @@
+name: Python FastApi CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+env:
+  MODE: ${{ secrets.MODE }}
+  LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
+
+  LOGIN_DB: ${{ secrets.LOGIN_DB }}
+  PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+  NAME_DB: ${{ secrets.NAME_DB }}
+  HOST: ${{ secrets.HOST }}
+  PORT: ${{ secrets.PORT }}
+  HASH_FUNCTION: ${{ secrets.HASH_FUNCTION }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DIALECT_DB: ${{ secrets.DIALECT_DB }}
+  DRIVER_DB: ${{ secrets.DRIVER_DB }}
+
+  TEST_LOGIN_DB: ${{ secrets.TEST_LOGIN_DB }}
+  TEST_PASSWORD_DB: ${{ secrets.TEST_PASSWORD_DB }}
+  TEST_NAME_DB: ${{ secrets.TEST_NAME_DB }}
+  TEST_HOST: ${{ secrets.TEST_HOST }}
+  TEST_PORT: ${{ secrets.TEST_PORT }}
+
+  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+  SMTP_PORT: ${{ secrets.SMTP_PORT }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+
+  HOST_REDIS: ${{ secrets.HOST_REDIS }}
+  SENTRY_DNS: ${{ secrets.SENTRY_DNS }}
+
+jobs:
+  build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: (unit) test_users
+        run: |
+          pytest -v -s -p no:warnings app/tests/unit_tests/test_users
+
+      - name: (integration) test_api_bookings
+        run: |
+          pytest -v -s -p no:warnings app/tests/integration_tests/test_bookings/test_api_bookings.py
+
+      - name: (integration) test_dao_bookings
+        run: |
+          pytest -v -s -p no:warnings app/tests/integration_tests/test_bookings/test_dao_bookings.py
+
+      - name: (integration) test_hotels
+        run: |
+          pytest -v -s -p no:warnings app/tests/integration_tests/test_hotels
+
+      - name: (integration) test_rooms
+        run: |
+          pytest -v -s -p no:warnings app/tests/integration_tests/test_rooms
+
+      - name: (integration) test_users
+        run: |
+          pytest -v -s -p no:warnings app/tests/integration_tests/test_users
