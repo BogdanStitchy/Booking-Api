@@ -2,7 +2,6 @@
 __pycache__
 config/.env
 app/static/images/*
-run_tests.*
 redis-server.*
 *.rdb
 .env*
