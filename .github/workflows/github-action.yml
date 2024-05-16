@@ -17,7 +17,7 @@ env:
   PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
   NAME_DB: ${{ secrets.NAME_DB }}
   HOST: ${{ secrets.HOST }}
-  PORT: ${{ secrets.PORT }}
+  DB_PORT: ${{ secrets.DB_PORT }}
   HASH_FUNCTION: ${{ secrets.HASH_FUNCTION }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   DIALECT_DB: ${{ secrets.DIALECT_DB }}
